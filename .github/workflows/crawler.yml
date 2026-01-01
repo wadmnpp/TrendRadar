@@ -161,3 +161,20 @@ jobs:
           S3_REGION: ${{ secrets.S3_REGION }}
           GITHUB_ACTIONS: true
         run: python -m trendradar
+
+      # ===============================================================
+      # 新增：运行RSS生成脚本（生成标准RSS 2.0文件，供NetNewsWire/Fluent Reader订阅）
+      # ===============================================================
+      - name: Generate Standard RSS 2.0 Feed
+        if: success()
+        run: python generate_rss.py
+
+      # ===============================================================
+      # 新增：上传RSS文件作为工件，确保GitHub Pages能访问到该文件
+      # ===============================================================
+      - name: Upload RSS File to Artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trendradar-rss-file
+          path: ./output/trendradar_rss.xml
